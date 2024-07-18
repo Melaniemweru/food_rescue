@@ -1,0 +1,98 @@
+Python 3.12.4 (tags/v3.12.4:8e8a4ba, Jun  6 2024, 19:30:16) [MSC v.1940 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license()" for more information.
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 1rem;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.hero {
+    background-color: #5ca4a9;
+    color: #fff;
+    padding: 2rem;
+    text-align: center;
+}
+
+.features {
+    padding: 2rem;
+    background-color: #fff;
+}
+
+.feature {
+    margin-bottom: 1rem;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+.login, .register, .tracking {
+    padding: 2rem;
+...     background-color: #fff;
+...     margin: 2rem auto;
+...     width: 50%;
+...     border-radius: 10px;
+...     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+... }
+... 
+... .login h1, .register h1, .tracking h1 {
+...     margin-bottom: 1rem;
+... }
+... 
+... .login form, .register form {
+...     display: flex;
+...     flex-direction: column;
+... }
+... 
+... .login form label, .register form label {
+...     margin-bottom: 0.5rem;
+... }
+... 
+... .login form input, .register form input {
+...     margin-bottom: 1rem;
+...     padding: 0.5rem;
+...     border: 1px solid #ddd;
+...     border-radius: 5px;
+... }
+... 
+... button {
+...     padding: 0.5rem;
+...     border: none;
+...     border-radius: 5px;
+...     background-color: #5ca4a9;
+...     color: #fff;
+...     cursor: pointer;
+... }
+... 
+... button:hover {
+...     background-color: #499892;
+... }
