@@ -1,5 +1,3 @@
-Python 3.12.4 (tags/v3.12.4:8e8a4ba, Jun  6 2024, 19:30:16) [MSC v.1940 64 bit (AMD64)] on win32
-Type "help", "copyright", "credits" or "license()" for more information.
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -85,42 +83,41 @@ def volunteer():
 
 @app.route('/track/<int:item_id>')
 @login_required
-... def track(item_id):
-...     item = Inventory.query.get(item_id)
-...     volunteers = Volunteer.query.filter_by(item_id=item_id).all()
-...     return render_template('track.html', item=item, volunteers=volunteers)
-... 
-... @app.route('/login', methods=['GET', 'POST'])
-... def login():
-...     if request.method == 'POST':
-...         username = request.form['username']
-...         password = request.form['password']
-...         user = User.query.filter_by(username=username).first()
-...         if user and user.password == password:
-...             login_user(user)
-...             return redirect(url_for('index'))
-...         else:
-...             flash('Login Unsuccessful. Please check username and password', 'danger')
-...     return render_template('login.html')
-... 
-... @app.route('/logout')
-... @login_required
-... def logout():
-...     logout_user()
-...     return redirect(url_for('login'))
-... 
-... @app.route('/register', methods=['GET', 'POST'])
-... def register():
-...     if request.method == 'POST':
-...         username = request.form['username']
-...         password = request.form['password']
-...         user = User(username=username, password=password)
-...         db.session.add(user)
-...         db.session.commit()
-...         flash('Account created successfully!', 'success')
-...         return redirect(url_for('login'))
-...     return render_template('register.html')
-... 
-... if __name__ == '__main__':
-...     app.run(debug=True)
-... 
+def track(item_id):
+    item = Inventory.query.get(item_id)
+    volunteers = Volunteer.query.filter_by(item_id=item_id).all()
+    return render_template('track.html', item=item, volunteers=volunteers)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user and user.password == password:
+            login_user(user)
+            return redirect(url_for('index'))
+        else:
+            flash('Login Unsuccessful. Please check username and password', 'danger')
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = User(username=username, password=password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Account created successfully!', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
