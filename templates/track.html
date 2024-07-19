@@ -3,30 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track Missions</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Track Missions - Food Rescue Alert System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('track', item_id=1) }}">Track Missions</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
     <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="track.html">Track Missions</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="register.html">Register</a></li>
-            </ul>
-        </nav>
+        <h1>Track Food Rescue Missions</h1>
     </header>
     <main>
-        <section class="tracking">
-            <h1>Track Food Rescue Missions</h1>
-            <p>Below is a list of ongoing and upcoming food rescue missions.</p>
-            <ul>
-                <li>Mission 1: Grocery Store A - Pickup at 2 PM</li>
-                <li>Mission 2: Restaurant B - Pickup at 4 PM</li>
-                <li>Mission 3: Bakery C - Pickup at 6 PM</li>
-            </ul>
-        </section>
+        <h2>{{ item.item }} - Volunteers</h2>
+        <ul>
+            {% for volunteer in volunteers %}
+            <li>{{ volunteer.name }}</li>
+            {% endfor %}
+        </ul>
     </main>
     <footer>
         <p>&copy; 2024 Food Rescue Alert System</p>

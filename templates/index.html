@@ -3,26 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Rescue Alert System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <title>Home</title>
 </head>
 <body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('track', item_id=1) }}">Track Missions</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
     <header>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/track">Track</a></li>
-                <li><a href="/login">Login</a></li>
-                <li><a href="/register">Register</a></li>
-            </ul>
-        </nav>
+        <h1>Welcome to the Food Rescue Alert System</h1>
     </header>
-    <section class="hero">
-        <h1>Welcome to Food Rescue</h1>
-        <p>Helping reduce food waste by connecting near-expiry food with those in need.</p>
-    </section>
+    <main>
+        <h2>Available Food Items</h2>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Expiry Date</th>
+                <th>Action</th>
+            </tr>
+            {% for item in inventory %}
+            <tr>
+                <td>{{ item.item }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.expiry_date }}</td>
+                <td>
+                    <form action="{{ url_for('volunteer') }}" method="post">
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                        <button type="submit">Volunteer</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </main>
     <footer>
-        <p>&copy; 2024 Food Rescue</p>
+        <p>&copy; 2024 Food Rescue Alert System</p>
     </footer>
 </body>
 </html>
