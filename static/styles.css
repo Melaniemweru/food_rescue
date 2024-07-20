@@ -7,104 +7,97 @@ body {
 
 nav {
     background-color: #333;
-    color: #fff;
+    color: white;
     padding: 10px 0;
+    text-align: center;
 }
 
 nav ul {
-    list-style: none;
-    padding: 0;
+    list-style-type: none;
     margin: 0;
-    display: flex;
-    justify-content: center;
+    padding: 0;
 }
 
 nav ul li {
+    display: inline;
     margin: 0 15px;
 }
 
 nav ul li a {
-    color: #fff;
-    text-decoration: none;
-}
-
-header {
-    background-color: #4CAF50;
     color: white;
-    text-align: center;
-    padding: 10px 0;
+    text-decoration: none;
+    font-weight: bold;
 }
 
-main {
-    padding: 20px;
-}
-
-h1, h2 {
+h1 {
     color: #333;
+    text-align: center;
+    margin-top: 20px;
+}
+
+h2 {
+    color: #333;
+    text-align: center;
 }
 
 form {
-    max-width: 500px;
-    margin: 0 auto;
-    background: #fff;
+    max-width: 600px;
+    margin: 20px auto;
+    background: white;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-label {
-    display: block;
-    margin-bottom: 8px;
-    color: #333;
-}
-
-input[type="text"],
-input[type="password"],
-button {
+input[type="text"], input[type="password"], input[type="email"] {
     width: 100%;
     padding: 10px;
-    margin-bottom: 10px;
+    margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
 button {
-    background-color: #4CAF50;
+    width: 100%;
+    padding: 10px;
+    background: #5cb85c;
     color: white;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #45a049;
+    background: #4cae4c;
 }
 
 table {
-    width: 100%;
+    width: 80%;
+    margin: 20px auto;
     border-collapse: collapse;
-    margin: 20px 0;
 }
 
 table, th, td {
     border: 1px solid #ddd;
+    padding: 8px;
 }
 
-th, td {
-    padding: 12px;
-    text-align: left;
-}
-
-th {
-    background-color: #4CAF50;
+table th {
+    background-color: #5cb85c;
     color: white;
+    text-align: center;
+}
+
+table td {
+    text-align: center;
 }
 
 footer {
-    background-color: #333;
-    color: white;
     text-align: center;
-    padding: 10px 0;
+    padding: 10px;
+    background: #333;
+    color: white;
     position: fixed;
-    width: 100%;
     bottom: 0;
+    width: 100%;
 }

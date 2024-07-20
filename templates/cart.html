@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('track', item_id=1) }}">Track Missions</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+    <h1>Your Cart</h1>
+    <form action="{{ url_for('cart') }}" method="POST">
+        <input type="hidden" name="item_id" value="{{ item.id }}">
+        <input type="text" name="time_collected" placeholder="Time Collected" required>
+        <input type="text" name="proof_of_delivery" placeholder="Proof of Delivery" required>
+        <button type="submit">Submit</button>
+    </form>
+    <footer>&copy; 2024 Food Rescue Alert System</footer>
+</body>
+</html>

@@ -11,8 +11,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///food_rescue.db'
 app.config['SECRET_KEY'] = 'your_secret_key'
 
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)  # Ensure this line is present
-
+migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 Bootstrap(app)
@@ -30,17 +29,23 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
+    is_volunteer = db.Column(db.Boolean, default=False)
+    is_recipient = db.Column(db.Boolean, default=False)
 
 class Inventory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     item = db.Column(db.String(100), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     expiry_date = db.Column(db.String(100), nullable=False)
+    location = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(100), nullable=False)  # Restaurant, Grocery Shop, Supermarket
 
 class Volunteer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(150), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     item_id = db.Column(db.Integer, db.ForeignKey('inventory.id'), nullable=False)
+    time_collected = db.Column(db.String(100), nullable=False)
+    proof_of_delivery = db.Column(db.String(100), nullable=True)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -70,7 +75,8 @@ def index():
 def volunteer():
     name = request.form['name']
     item_id = request.form['item_id']
-    volunteer = Volunteer(name=name, item_id=item_id)
+    time_collected = request.form['time_collected']
+    volunteer = Volunteer(user_id=current_user.id, item_id=item_id, time_collected=time_collected)
     db.session.add(volunteer)
     db.session.commit()
     flash('Volunteer signed up successfully!', 'success')
@@ -112,12 +118,44 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = User(username=username, password=password)
+        is_volunteer = 'is_volunteer' in request.form
+        is_recipient = 'is_recipient' in request.form
+        user = User(username=username, password=password, is_volunteer=is_volunteer, is_recipient=is_recipient)
         db.session.add(user)
         db.session.commit()
         flash('Account created successfully!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html')
+
+@app.route('/add_item', methods=['GET', 'POST'])
+@login_required
+def add_item():
+    if request.method == 'POST':
+        item = request.form['item']
+        quantity = request.form['quantity']
+        expiry_date = request.form['expiry_date']
+        location = request.form['location']
+        category = request.form['category']
+        new_item = Inventory(item=item, quantity=quantity, expiry_date=expiry_date, location=location, category=category)
+        db.session.add(new_item)
+        db.session.commit()
+        flash('Item added successfully!', 'success')
+        return redirect(url_for('index'))
+    return render_template('add_item.html')
+
+@app.route('/cart', methods=['GET', 'POST'])
+@login_required
+def cart():
+    if request.method == 'POST':
+        item_id = request.form['item_id']
+        time_collected = request.form['time_collected']
+        proof_of_delivery = request.form['proof_of_delivery']
+        volunteer = Volunteer.query.filter_by(user_id=current_user.id, item_id=item_id).first()
+        volunteer.proof_of_delivery = proof_of_delivery
+        db.session.commit()
+        flash('Delivery proof submitted successfully!', 'success')
+        return redirect(url_for('index'))
+    return render_template('cart.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
