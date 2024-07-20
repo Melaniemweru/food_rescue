@@ -12,6 +12,7 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 Bootstrap(app)
@@ -29,23 +30,19 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
-    is_volunteer = db.Column(db.Boolean, default=False)
-    is_recipient = db.Column(db.Boolean, default=False)
+    role = db.Column(db.String(50), nullable=False)  # 'volunteer', 'receiver', 'donor'
 
-class Inventory(db.Model):
+class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    item = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     expiry_date = db.Column(db.String(100), nullable=False)
-    location = db.Column(db.String(100), nullable=False)
-    category = db.Column(db.String(100), nullable=False)  # Restaurant, Grocery Shop, Supermarket
+    donor_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 class Volunteer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    item_id = db.Column(db.Integer, db.ForeignKey('inventory.id'), nullable=False)
-    time_collected = db.Column(db.String(100), nullable=False)
-    proof_of_delivery = db.Column(db.String(100), nullable=True)
+    name = db.Column(db.String(150), nullable=False)
+    item_id = db.Column(db.Integer, db.ForeignKey('item.id'), nullable=False)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -53,7 +50,7 @@ def load_user(user_id):
 
 # Send email notification
 def send_email_notification(item, name):
-    msg = MIMEText(f"Volunteer {name} signed up to rescue {item.item}!")
+    msg = MIMEText(f"Volunteer {name} signed up to rescue {item.name}!")
     msg['Subject'] = 'Food Rescue Alert'
     msg['From'] = EMAIL_FROM
     msg['To'] = EMAIL_TO
@@ -67,22 +64,20 @@ def send_email_notification(item, name):
 @app.route('/')
 @login_required
 def index():
-    inventory = Inventory.query.all()
-    return render_template('index.html', inventory=inventory)
+    items = Item.query.all()
+    return render_template('index.html', items=items)
 
 @app.route('/volunteer', methods=['POST'])
 @login_required
 def volunteer():
     name = request.form['name']
     item_id = request.form['item_id']
-    time_collected = request.form['time_collected']
-    volunteer = Volunteer(user_id=current_user.id, item_id=item_id, time_collected=time_collected)
+    volunteer = Volunteer(name=name, item_id=item_id)
     db.session.add(volunteer)
     db.session.commit()
     flash('Volunteer signed up successfully!', 'success')
 
-    # Send email notification
-    item = Inventory.query.get(item_id)
+    item = Item.query.get(item_id)
     send_email_notification(item, name)
 
     return redirect(url_for('index'))
@@ -90,7 +85,7 @@ def volunteer():
 @app.route('/track/<int:item_id>')
 @login_required
 def track(item_id):
-    item = Inventory.query.get(item_id)
+    item = Item.query.get(item_id)
     volunteers = Volunteer.query.filter_by(item_id=item_id).all()
     return render_template('track.html', item=item, volunteers=volunteers)
 
@@ -118,44 +113,29 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        is_volunteer = 'is_volunteer' in request.form
-        is_recipient = 'is_recipient' in request.form
-        user = User(username=username, password=password, is_volunteer=is_volunteer, is_recipient=is_recipient)
+        role = request.form['role']
+        user = User(username=username, password=password, role=role)
         db.session.add(user)
         db.session.commit()
         flash('Account created successfully!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html')
 
-@app.route('/add_item', methods=['GET', 'POST'])
+@app.route('/donate', methods=['GET', 'POST'])
 @login_required
-def add_item():
+def donate():
     if request.method == 'POST':
-        item = request.form['item']
+        item_name = request.form['item_name']
         quantity = request.form['quantity']
         expiry_date = request.form['expiry_date']
-        location = request.form['location']
-        category = request.form['category']
-        new_item = Inventory(item=item, quantity=quantity, expiry_date=expiry_date, location=location, category=category)
-        db.session.add(new_item)
+        item = Item(name=item_name, quantity=quantity, expiry_date=expiry_date, donor_id=current_user.id)
+        db.session.add(item)
         db.session.commit()
-        flash('Item added successfully!', 'success')
+        flash('Item donated successfully!', 'success')
         return redirect(url_for('index'))
-    return render_template('add_item.html')
-
-@app.route('/cart', methods=['GET', 'POST'])
-@login_required
-def cart():
-    if request.method == 'POST':
-        item_id = request.form['item_id']
-        time_collected = request.form['time_collected']
-        proof_of_delivery = request.form['proof_of_delivery']
-        volunteer = Volunteer.query.filter_by(user_id=current_user.id, item_id=item_id).first()
-        volunteer.proof_of_delivery = proof_of_delivery
-        db.session.commit()
-        flash('Delivery proof submitted successfully!', 'success')
-        return redirect(url_for('index'))
-    return render_template('cart.html')
+    return render_template('donate.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+

@@ -9,20 +9,16 @@
     <nav>
         <ul>
             <li><a href="{{ url_for('index') }}">Home</a></li>
-            <li><a href="{{ url_for('track', item_id=1) }}">Track Missions</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
     </nav>
     <h1>Track Food Rescue Missions</h1>
-    <h2>Item: {{ item.item }}</h2>
-    <h3>Location: {{ item.location }}</h3>
-    <h3>Category: {{ item.category }}</h3>
-    <h3>Volunteers</h3>
+    <h2>{{ item.name }}</h2>
     <ul>
+        <li>Volunteers</li>
         {% for volunteer in volunteers %}
-            <li>{{ volunteer.user.username }} - Collected at {{ volunteer.time_collected }} - Proof: {{ volunteer.proof_of_delivery }}</li>
+        <li>{{ volunteer.name }}</li>
         {% endfor %}
     </ul>
-    <footer>&copy; 2024 Food Rescue Alert System</footer>
 </body>
 </html>

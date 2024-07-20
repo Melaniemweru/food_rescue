@@ -20,31 +20,26 @@
                 <th>Item</th>
                 <th>Quantity</th>
                 <th>Expiry Date</th>
-                <th>Location</th>
-                <th>Category</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            {% for item in inventory %}
-                <tr>
-                    <td>{{ item.item }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>{{ item.expiry_date }}</td>
-                    <td>{{ item.location }}</td>
-                    <td>{{ item.category }}</td>
-                    <td>
-                        <form action="{{ url_for('volunteer') }}" method="POST">
-                            <input type="hidden" name="item_id" value="{{ item.id }}">
-                            <input type="hidden" name="name" value="{{ current_user.username }}">
-                            <input type="text" name="time_collected" placeholder="Time to collect">
-                            <button type="submit">Collect</button>
-                        </form>
-                    </td>
-                </tr>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.expiry_date }}</td>
+                <td>
+                    <form action="{{ url_for('volunteer') }}" method="post">
+                        <input type="hidden" name="name" value="{{ current_user.username }}">
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                        <button type="submit">Collect</button>
+                    </form>
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
-    <footer>&copy; 2024 Food Rescue Alert System</footer>
 </body>
 </html>
+
