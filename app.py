@@ -30,7 +30,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
-    role = db.Column(db.String(50), nullable=False)  # Ensure this line is included
+    role = db.Column(db.String(50), nullable=False)
 
 class Inventory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -43,6 +43,7 @@ class Volunteer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
     item_id = db.Column(db.Integer, db.ForeignKey('inventory.id'), nullable=False)
+    deliveries = db.Column(db.Integer, nullable=False, default=0)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -114,7 +115,7 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        role = request.form['role']  # Assume a form field for role
+        role = request.form['role']
         user = User(username=username, password=password, role=role)
         db.session.add(user)
         db.session.commit()
@@ -124,5 +125,3 @@ def register():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
